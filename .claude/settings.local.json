@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Sleep -Seconds 2; Invoke-WebRequest -Uri \"http://localhost:3000/api/data\" -UseBasicParsing | Select-Object StatusCode, @{N='Body';E={$_.Content.Substring\\(0,200\\)}})",
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)"
+    ]
+  }
+}

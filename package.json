@@ -1,0 +1,12 @@
+{
+  "name": "ics-project-planner",
+  "version": "1.0.0",
+  "description": "AI Transformation Programme — Project Planning Tool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

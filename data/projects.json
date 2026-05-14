@@ -1,0 +1,444 @@
+{
+  "projects": [
+    {
+      "id": "a13bb35e-ff39-4c4d-a101-a50b384fab61",
+      "name": "Derbyshire AI Mailbox",
+      "colour": "#E74C3C",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "98285ae5-3113-443a-9fe5-caa3dc5dca19",
+          "name": "Understand State of Play",
+          "description": "",
+          "startDate": "2026-05-04",
+          "endDate": "2026-05-08",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "17907331-09a6-4452-a736-919a3d429a7c",
+          "name": "Design Approach",
+          "description": "",
+          "startDate": "2026-05-11",
+          "endDate": "2026-05-15",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "68c2fcf3-594e-496e-8026-a63407fcbf68",
+          "name": "Requirements & V1 Scope",
+          "description": "",
+          "startDate": "2026-05-18",
+          "endDate": "2026-05-22",
+          "assignees": [
+            "Nish",
+            "Mike"
+          ],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "4f97d2c5-6c9f-4dd9-8b98-12e8679fc5b9",
+          "name": "Implement Solution For UAT",
+          "description": "",
+          "startDate": "2026-05-18",
+          "endDate": "2026-05-29",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "30a77d43-c98b-4937-86aa-d3605c5a64ba",
+          "name": "Internal UAT",
+          "description": "",
+          "startDate": "2026-06-01",
+          "endDate": "2026-06-05",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "4d441d70-7489-4e0a-81a0-70dfce44b714",
+          "name": "Client UAT",
+          "description": "",
+          "startDate": "2026-06-08",
+          "endDate": "2026-06-12",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "ace73043-1354-41b5-80c7-9cbf4f6c420b",
+          "name": "UAT Feedback",
+          "description": "",
+          "startDate": "2026-06-15",
+          "endDate": "2026-06-19",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "44b3fe30-e017-4dc0-b4f5-b0041bb998d4",
+          "name": "Post UAT Work (start)",
+          "description": "",
+          "startDate": "2026-06-22",
+          "endDate": "2026-06-26",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "id": "d457421a-a6f6-4001-984e-a83b5d9e384f",
+      "name": "General Tasks",
+      "colour": "#1ABC9C",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "318ac102-40b0-42cf-9bdf-fdab4c119621",
+          "name": "Bank Holiday",
+          "description": "",
+          "startDate": "2026-05-25",
+          "endDate": "2026-05-25",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "7990c716-e618-4e58-9b47-8eac3cd50747",
+          "name": "Lee Holiday",
+          "description": "",
+          "startDate": "2026-05-26",
+          "endDate": "2026-06-01",
+          "assignees": [
+            "Lee Englestone"
+          ],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "4e403331-99f2-4448-952d-42e3fbb61cbb",
+          "name": "Mapping Prompts to Use Cases",
+          "description": "",
+          "startDate": "2026-05-11",
+          "endDate": "2026-05-11",
+          "assignees": [
+            "Lee"
+          ],
+          "collapsed": false,
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "id": "075b17a9-169f-4c07-aa8e-6d64277f5d97",
+      "name": "CeC AI Transformation Phase Design",
+      "colour": "#9B59B6",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "b1544a58-5d81-4e6e-863f-195d69cb5673",
+          "name": "Internal Phase Discussions",
+          "description": "What does designing and delivering this phase look like?",
+          "startDate": "2026-05-11",
+          "endDate": "2026-05-22",
+          "assignees": [
+            "Lee",
+            "Nish",
+            "Alex"
+          ],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "35d391b8-861b-4d59-a355-9957f871704f",
+          "name": "External Sharing?",
+          "description": "",
+          "startDate": "2026-05-26",
+          "endDate": "2026-05-29",
+          "assignees": [
+            "Alex",
+            "Nish"
+          ],
+          "collapsed": false,
+          "subtasks": []
+        }
+      ]
+    },
+    {
+      "id": "proj-001",
+      "name": "Legal Department",
+      "colour": "#4A90E2",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "task-001",
+          "name": "Legal Use Case Deep Dive",
+          "description": "Discuss Legal Department Use Cases",
+          "assignees": [],
+          "startDate": "2026-06-01",
+          "endDate": "2026-06-04",
+          "subtasks": [],
+          "collapsed": false
+        },
+        {
+          "id": "50395af1-f98d-4e5c-945c-27d56dff0381",
+          "name": "Use Cases 1 & 2",
+          "description": "",
+          "startDate": "2026-06-08",
+          "endDate": "2026-07-10",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": [
+            {
+              "id": "70bcde67-2df6-43bb-9541-d41879a4e16d",
+              "name": "Prototype",
+              "description": "",
+              "startDate": "2026-06-08",
+              "endDate": "2026-06-12",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "56943657-c9f6-49cc-8d67-c167bf89ae83",
+              "name": "Solution Design",
+              "description": "",
+              "startDate": "2026-06-15",
+              "endDate": "2026-06-19",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "702fa0e7-3b46-42d4-8320-9800ef96bbaa",
+              "name": "Development",
+              "description": "",
+              "startDate": "2026-06-22",
+              "endDate": "2026-06-26",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "e6650513-328f-44f1-a6b8-1f535f97199f",
+              "name": "UAT",
+              "description": "",
+              "startDate": "2026-06-29",
+              "endDate": "2026-07-03",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "2deed74e-1193-4422-88ee-46ec3960ee81",
+              "name": "Deployment",
+              "description": "",
+              "startDate": "2026-07-06",
+              "endDate": "2026-07-10",
+              "assignees": [],
+              "subtasks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj-002",
+      "name": "Child Services",
+      "colour": "#7ED321",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "task-004",
+          "name": "Child Services Use Case Deep Dive",
+          "description": "",
+          "assignees": [],
+          "startDate": "2026-06-08",
+          "endDate": "2026-06-12",
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "929b58e1-6f6f-420b-887c-5c2eaec135a0",
+          "name": "Use Cases 7, 9, 10",
+          "description": "",
+          "startDate": "2026-06-15",
+          "endDate": "2026-07-17",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": [
+            {
+              "id": "task-005",
+              "name": "Prototype",
+              "description": "Build internal PoC with selected vendor, test with 20 pilot users.",
+              "assignees": [],
+              "startDate": "2026-06-15",
+              "endDate": "2026-06-19",
+              "subtasks": []
+            },
+            {
+              "id": "cadb6a8d-f320-44a7-b05d-a7ea4f8cd1e8",
+              "name": "Solution Design",
+              "description": "",
+              "startDate": "2026-06-22",
+              "endDate": "2026-06-26",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "9c8b502b-f5e4-4cf7-8873-85588c5de5bb",
+              "name": "Development",
+              "description": "",
+              "startDate": "2026-06-29",
+              "endDate": "2026-07-03",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "af0578d9-2cb1-4ff8-abd0-a82a21e87ce6",
+              "name": "UAT",
+              "description": "",
+              "startDate": "2026-07-06",
+              "endDate": "2026-07-10",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "02fbd1f0-6e54-4b41-8c5d-ec88bb9d5959",
+              "name": "Deployment",
+              "description": "",
+              "startDate": "2026-07-13",
+              "endDate": "2026-07-17",
+              "assignees": [],
+              "subtasks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj-003",
+      "name": "Adult Services",
+      "colour": "#F5A623",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "task-007",
+          "name": "Adult Services Use Case Deep Dive",
+          "description": "",
+          "assignees": [],
+          "startDate": "2026-06-15",
+          "endDate": "2026-06-19",
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "722f1edb-8006-4cb8-8d3d-dd51cfd13d12",
+          "name": "Use Cases 2, 4, 5",
+          "description": "",
+          "startDate": "2026-06-22",
+          "endDate": "2026-07-24",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": [
+            {
+              "id": "task-008",
+              "name": "Prototype",
+              "description": "Build automated training, evaluation and deployment pipelines.",
+              "assignees": [
+                "Tom Barclay"
+              ],
+              "startDate": "2026-06-22",
+              "endDate": "2026-06-26",
+              "subtasks": []
+            },
+            {
+              "id": "task-009",
+              "name": "Solution Design",
+              "description": "Implement model drift detection and performance dashboards.",
+              "assignees": [],
+              "startDate": "2026-06-29",
+              "endDate": "2026-07-03",
+              "subtasks": []
+            },
+            {
+              "id": "6cad70b9-930a-4cad-bd51-18489c88576c",
+              "name": "Development",
+              "description": "",
+              "startDate": "2026-07-06",
+              "endDate": "2026-07-10",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "d3696c83-8729-4d1c-8598-ec2a4c1fd885",
+              "name": "UAT",
+              "description": "",
+              "startDate": "2026-07-13",
+              "endDate": "2026-07-17",
+              "assignees": [],
+              "subtasks": []
+            },
+            {
+              "id": "5096efa2-2954-40c7-8e3a-3ad5a6f107ad",
+              "name": "Deployment",
+              "description": "",
+              "startDate": "2026-07-20",
+              "endDate": "2026-07-24",
+              "assignees": [],
+              "subtasks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ce5f9d03-c930-4981-b4e7-7ab597cf8230",
+      "name": "Legal Department",
+      "colour": "#D0021B",
+      "collapsed": false,
+      "tasks": [
+        {
+          "id": "bb360ce1-c394-432a-b013-cda692ccebf2",
+          "name": "Planning Use Case Deep Dive",
+          "description": "",
+          "startDate": "2026-06-22",
+          "endDate": "2026-06-26",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        },
+        {
+          "id": "dda6b5cd-5372-4e23-9919-d2307df449cb",
+          "name": "Use Cases 5 & 6",
+          "description": "",
+          "startDate": "2026-06-29",
+          "endDate": "2026-07-31",
+          "assignees": [],
+          "collapsed": false,
+          "subtasks": []
+        }
+      ]
+    }
+  ],
+  "todos": [
+    {
+      "id": "3946e26b-1b05-48e4-a8de-fd28cdb90563",
+      "name": "Derby: Get access to mailboxes",
+      "description": "",
+      "assignees": []
+    },
+    {
+      "id": "1376e61a-891d-4820-9956-22c5f89dae87",
+      "name": "Cheshire: Get access to CoCo",
+      "description": "",
+      "assignees": []
+    },
+    {
+      "id": "5ce09e9b-9f47-481c-954d-ef02f7cfbab9",
+      "name": "Cheshire: Tatton Park",
+      "description": "",
+      "assignees": []
+    }
+  ]
+}

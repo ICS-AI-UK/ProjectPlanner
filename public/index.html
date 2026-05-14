@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICS Project Planner — AI Transformation</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-logo">ICS</span>
+      <h1 class="app-title">AI Transformation Programme</h1>
+    </div>
+    <div class="header-center">
+      <button class="btn btn-ghost" id="btn-prev">&#8592; Prev</button>
+      <button class="btn btn-ghost" id="btn-today">Today</button>
+      <button class="btn btn-ghost" id="btn-next">Next &#8594;</button>
+      <label class="date-label">From <input type="date" id="view-from" /></label>
+      <label class="date-label">To <input type="date" id="view-to" /></label>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-ghost" id="btn-considerations">&#9888; Considerations</button>
+      <button class="btn btn-primary" id="btn-add-project">+ Add Project</button>
+    </div>
+  </header>
+
+  <div class="modal-overlay hidden" id="considerations-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Considerations</h2>
+        <button class="modal-close" id="considerations-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ul class="considerations-list">
+          <li>A plan is needed to release project funds from the client</li>
+          <li>Always have &ldquo;Benefits realisation&rdquo; in mind</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header-spacer"></div>
+      <div class="sidebar-inner" id="sidebar-inner"></div>
+    </div>
+
+    <div class="divider" id="divider"></div>
+
+    <div class="gantt-panel" id="gantt-panel">
+      <div class="gantt-inner" id="gantt-inner"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add Project</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-danger hidden" id="modal-delete">Delete</button>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+          <button class="btn btn-primary" id="modal-save">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
