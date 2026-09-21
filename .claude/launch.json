@@ -2,11 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "project-planner",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server.js"],
-      "port": 3003,
-      "autoPort": true
+      "name": "planner",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 3003
     }
   ]
 }

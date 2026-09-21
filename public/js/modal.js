@@ -1,4 +1,4 @@
-import { uuid, PALETTE, nextColour, addProject, updateProject, deleteProject, addTask, updateTask, deleteTask, addSubtask, updateSubtask, deleteSubtask, addChildItem, updateItemById, deleteItemById, getState } from './store.js';
+import { uuid, PALETTE, nextColour, addProject, updateProject, deleteProject, addTask, updateTask, deleteTask, addSubtask, updateSubtask, deleteSubtask, addChildItem, updateItemById, deleteItemById, getState, addMilestone, updateMilestone, deleteMilestone, addBankHoliday, updateBankHoliday, deleteBankHoliday } from './store.js';
 
 const overlay  = document.getElementById('modal-overlay');
 const modalEl  = document.getElementById('modal');
@@ -259,6 +259,95 @@ export function openEditSubtask(projectId, subtask) {
     () => deleteItemById(projectId, subtask.id)
   );
   const tagBind = bindTagInput(bodyEl);
+}
+
+// ── Milestone modal ───────────────────────────────────────────
+function milestoneFormHTML(milestone = {}) {
+  return `
+    <div class="field">
+      <label>Milestone Name *</label>
+      <input type="text" id="f-ms-name" value="${esc(milestone.name || '')}" placeholder="e.g. Go Live" />
+    </div>
+    <div class="field">
+      <label>Date *</label>
+      <input type="date" id="f-ms-date" value="${milestone.date || ''}" />
+    </div>`;
+}
+
+function readMilestoneForm() {
+  const name = bodyEl.querySelector('#f-ms-name').value.trim();
+  const date = bodyEl.querySelector('#f-ms-date').value;
+  if (!name) { alert('Milestone name is required.'); return null; }
+  if (!date) { alert('Date is required.'); return null; }
+  return { name, date };
+}
+
+export function openAddMilestone(projectId) {
+  open('Add Milestone', milestoneFormHTML(), () => {
+    const data = readMilestoneForm();
+    if (!data) return;
+    addMilestone(projectId, { id: uuid(), ...data });
+    closeModal();
+  });
+}
+
+export function openEditMilestone(projectId, milestone) {
+  open('Edit Milestone', milestoneFormHTML(milestone),
+    () => {
+      const data = readMilestoneForm();
+      if (!data) return;
+      updateMilestone(projectId, milestone.id, data);
+      closeModal();
+    },
+    () => deleteMilestone(projectId, milestone.id)
+  );
+}
+
+// ── Bank holiday modal ────────────────────────────────────────
+function bankHolidayFormHTML(holiday = {}) {
+  return `
+    <div class="field">
+      <label>Name *</label>
+      <input type="text" id="f-bh-name" value="${esc(holiday.name || '')}" placeholder="e.g. Christmas Day" />
+    </div>
+    <div class="field">
+      <label>Date *</label>
+      <input type="date" id="f-bh-date" value="${holiday.date || ''}" />
+    </div>`;
+}
+
+function readBankHolidayForm() {
+  const name = bodyEl.querySelector('#f-bh-name').value.trim();
+  const date = bodyEl.querySelector('#f-bh-date').value;
+  if (!name) { alert('Name is required.'); return null; }
+  if (!date) { alert('Date is required.'); return null; }
+  return { name, date };
+}
+
+export function openAddBankHoliday(onDone) {
+  open('Add Bank Holiday', bankHolidayFormHTML(), () => {
+    const data = readBankHolidayForm();
+    if (!data) return;
+    addBankHoliday({ id: uuid(), ...data });
+    closeModal();
+    onDone?.();
+  });
+}
+
+export function openEditBankHoliday(holiday, onDone) {
+  open('Edit Bank Holiday', bankHolidayFormHTML(holiday),
+    () => {
+      const data = readBankHolidayForm();
+      if (!data) return;
+      updateBankHoliday(holiday.id, data);
+      closeModal();
+      onDone?.();
+    },
+    () => {
+      deleteBankHoliday(holiday.id);
+      onDone?.();
+    }
+  );
 }
 
 // ── Toast ─────────────────────────────────────────────────────

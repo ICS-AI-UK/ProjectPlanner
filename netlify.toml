@@ -1,0 +1,14 @@
+# The front end is plain static files with no build step, so there is no
+# build command — Netlify just publishes public/ and bundles the function.
+[build]
+  publish = "public"
+
+[build.environment]
+  # @netlify/blobs 11 requires Node >= 22.12.
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  # data.mjs reads this as seed data the first time the site is opened.
+  included_files = ["data/projects.json"]

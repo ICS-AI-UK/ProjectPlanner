@@ -140,6 +140,55 @@ export function reorderTasks(projectId, fromId, toId, position) {
   });
 }
 
+// ── Milestone helpers ─────────────────────────────────────────
+export function addMilestone(projectId, milestone) {
+  setState({
+    ...state,
+    projects: state.projects.map(p =>
+      p.id === projectId ? { ...p, milestones: [...(p.milestones || []), milestone] } : p
+    ),
+  });
+}
+
+export function updateMilestone(projectId, milestoneId, patch) {
+  setState({
+    ...state,
+    projects: state.projects.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, milestones: (p.milestones || []).map(m => m.id === milestoneId ? { ...m, ...patch } : m) };
+    }),
+  });
+}
+
+export function deleteMilestone(projectId, milestoneId) {
+  setState({
+    ...state,
+    projects: state.projects.map(p =>
+      p.id === projectId ? { ...p, milestones: (p.milestones || []).filter(m => m.id !== milestoneId) } : p
+    ),
+  });
+}
+
+// ── Bank holiday helpers ──────────────────────────────────────
+export function addBankHoliday(holiday) {
+  setState({ ...state, bankHolidays: [...(state.bankHolidays || []), holiday] });
+}
+
+export function updateBankHoliday(id, patch) {
+  setState({
+    ...state,
+    bankHolidays: (state.bankHolidays || []).map(h => h.id === id ? { ...h, ...patch } : h),
+  });
+}
+
+export function deleteBankHoliday(id) {
+  setState({ ...state, bankHolidays: (state.bankHolidays || []).filter(h => h.id !== id) });
+}
+
+export function getBankHolidaySet() {
+  return new Set((state.bankHolidays || []).map(h => h.date));
+}
+
 // ── Todo helpers ──────────────────────────────────────────────
 export function addTodo(todo) {
   setState({ ...state, todos: [...(state.todos || []), todo] });

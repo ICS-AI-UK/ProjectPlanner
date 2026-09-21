@@ -1,5 +1,5 @@
 import { getState, updateProject, updateTask, reorderProjects, reorderTasks, promoteToSubtask, demoteFromSubtask, updateItemById, deleteItemById, reorderChildren, moveItemToParent, moveItemToTopLevel, findInTree } from './store.js';
-import { openEditProject, openAddTask, openEditTask, openAddSubtask, openEditSubtask } from './modal.js';
+import { openEditProject, openAddTask, openEditTask, openAddSubtask, openEditSubtask, openAddMilestone, openEditMilestone } from './modal.js';
 
 const sidebarInner = document.getElementById('sidebar-inner');
 let activeMenu = null;
@@ -16,6 +16,9 @@ export function renderSidebar() {
 
   projects.forEach(project => {
     sidebarInner.appendChild(makeProjectRow(project));
+    (project.milestones || []).forEach(milestone => {
+      sidebarInner.appendChild(makeMilestoneRow(project, milestone));
+    });
     if (!project.collapsed) {
       project.tasks.forEach(task => {
         sidebarInner.appendChild(makeTaskRow(project, task));
@@ -53,6 +56,7 @@ function makeProjectRow(project) {
   const menu = makeMenuBtn([
     { label: 'Edit Project', action: () => openEditProject(project) },
     { label: 'Add Task', action: () => openAddTask(project.id) },
+    { label: 'Add Milestone', action: () => openAddMilestone(project.id) },
     { label: 'Delete Project', danger: true, action: () => {
       if (confirm(`Delete project "${project.name}" and all its tasks?`)) {
         import('./store.js').then(m => m.deleteProject(project.id));
@@ -137,6 +141,24 @@ function makeSubtaskRow(project, parentId, sub, depth) {
   ]);
 
   row.append(toggle, name, chips, menu);
+  return row;
+}
+
+function makeMilestoneRow(project, milestone) {
+  const row = document.createElement('div');
+  row.className = 'tree-row milestone-row';
+
+  const icon = document.createElement('div');
+  icon.className = 'milestone-icon';
+  icon.textContent = '◆';
+  icon.style.color = project.colour;
+
+  const name = document.createElement('div');
+  name.className = 'tree-name';
+  name.textContent = `${milestone.name} — ${milestone.date}`;
+
+  row.append(icon, name);
+  row.addEventListener('click', () => openEditMilestone(project.id, milestone));
   return row;
 }
 

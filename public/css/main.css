@@ -3,6 +3,7 @@
 
 :root {
   --header-height: 52px;
+  --disclaimer-height: 28px;
   --sidebar-width: 280px;
   --divider-width: 4px;
   --row-height: 36px;
@@ -121,10 +122,24 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
 .btn-icon     { padding: 4px 6px; background: transparent; border: none; color: var(--colour-text-muted); font-size: 16px; line-height: 1; }
 .btn-icon:hover     { color: var(--colour-text); background: var(--colour-border); border-radius: 4px; }
 
+/* ── Disclaimer bar ────────────────────────────────────────── */
+.disclaimer-bar {
+  height: var(--disclaimer-height);
+  background: #7c3aed;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-style: italic;
+  text-align: center;
+  line-height: var(--disclaimer-height);
+  flex-shrink: 0;
+  letter-spacing: .4px;
+}
+
 /* ── Layout body ───────────────────────────────────────────── */
 .app-body {
   display: flex;
-  height: calc(100vh - var(--header-height));
+  height: calc(100vh - var(--header-height) - var(--disclaimer-height));
   overflow: hidden;
 }
 
@@ -175,6 +190,9 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
 .gantt-inner {
   position: relative;
   min-height: 100%;
+  /* Explicit width is set in renderGantt(); without it this block would be
+     capped at the panel's visible width and the sticky header would clip. */
+  min-width: 100%;
 }
 
 /* ── Sidebar rows ──────────────────────────────────────────── */
@@ -306,7 +324,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
   border-bottom: 2px solid var(--colour-border);
   height: var(--gantt-header-height);
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .gantt-months, .gantt-days {
@@ -317,14 +335,20 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
 .gantt-month-cell {
   display: flex;
   align-items: center;
-  justify-content: center;
   font-size: 12px;
   font-weight: 600;
   color: var(--colour-text-muted);
   border-right: 1px solid var(--colour-border);
   background: #f8fafc;
-  overflow: hidden;
+  overflow: clip;
   flex-shrink: 0;
+}
+
+.gantt-month-label {
+  position: sticky;
+  left: 6px;
+  white-space: nowrap;
+  padding: 0 2px;
 }
 
 .gantt-day-cell {
@@ -415,6 +439,31 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
 
 .gantt-bar-handle.left  { background: rgba(0,0,0,.2); border-radius: var(--bar-radius) 0 0 var(--bar-radius); }
 .gantt-bar-handle.right { background: rgba(0,0,0,.2); border-radius: 0 var(--bar-radius) var(--bar-radius) 0; }
+
+/* ── Milestone markers ─────────────────────────────────────── */
+.gantt-milestone-wrap {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+}
+
+.gantt-milestone {
+  position: absolute;
+  top: calc((var(--row-height) - 16px) / 2);
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%);
+  background: currentColor;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 20;
+  transition: filter .1s;
+}
+
+.gantt-milestone:hover {
+  filter: brightness(1.25) drop-shadow(0 0 4px currentColor);
+}
 
 /* ── Today line ────────────────────────────────────────────── */
 .today-line {
@@ -845,6 +894,39 @@ html, body { height: 100%; overflow: hidden; font-family: var(--font); color: va
   outline-offset: -2px;
   border-radius: 3px;
 }
+
+/* ── Milestone sidebar rows ────────────────────────────────── */
+.tree-row.milestone-row {
+  padding-left: 28px;
+  font-size: 12px;
+  color: var(--colour-text-muted);
+  cursor: pointer;
+  font-style: italic;
+}
+
+.tree-row.milestone-row:hover { background: #f0f4ff; }
+
+.milestone-icon {
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-right: 2px;
+}
+
+/* ── Bank holidays overlay list ────────────────────────────── */
+.bh-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--colour-border);
+}
+
+.bh-info {
+  flex: 1;
+  font-size: 13px;
+}
+
+.btn-sm { padding: 3px 8px; font-size: 12px; }
 
 /* ── Considerations list ───────────────────────────────────── */
 .considerations-list {

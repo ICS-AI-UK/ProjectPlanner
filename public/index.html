@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ICS Project Planner — AI Transformation</title>
+  <title>ICS Project Planner</title>
   <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
   <header class="app-header">
     <div class="header-left">
       <span class="app-logo">ICS</span>
-      <h1 class="app-title">AI Transformation Programme</h1>
+      <h1 class="app-title">Project Planner</h1>
     </div>
     <div class="header-center">
       <button class="btn btn-ghost" id="btn-prev">&#8592; Prev</button>
@@ -20,10 +20,26 @@
       <label class="date-label">To <input type="date" id="view-to" /></label>
     </div>
     <div class="header-right">
+      <button class="btn btn-ghost" id="btn-bank-holidays">&#128197; Bank Holidays</button>
       <button class="btn btn-ghost" id="btn-considerations">&#9888; Considerations</button>
       <button class="btn btn-primary" id="btn-add-project">+ Add Project</button>
     </div>
   </header>
+
+  <div class="modal-overlay hidden" id="bank-holidays-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Bank Holidays</h2>
+        <button class="modal-close" id="bank-holidays-close">&times;</button>
+      </div>
+      <div class="modal-body" id="bank-holidays-body"></div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button class="btn btn-primary" id="bank-holidays-add">+ Add Bank Holiday</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-overlay hidden" id="considerations-overlay">
     <div class="modal">
@@ -39,6 +55,8 @@
       </div>
     </div>
   </div>
+
+  <div class="disclaimer-bar">Timelines are for discussion purposes only</div>
 
   <div class="app-body">
     <div class="sidebar" id="sidebar">

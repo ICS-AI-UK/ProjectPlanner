@@ -1,34 +1,52 @@
-import { getState, updateTask, updateSubtask } from './store.js';
-import { openEditTask, openEditSubtask } from './modal.js';
+import { getState, updateTask, updateSubtask, getBankHolidaySet } from './store.js';
+import { openEditTask, openEditSubtask, openEditMilestone } from './modal.js';
 
 const DAY_MS = 86400000;
 const DAY_W  = 32; // px — matches --day-width CSS var
 
-let viewStart = null; // Date (start of visible window)
-let viewEnd   = null; // Date (end of visible window)
+// The From/To inputs are a *focus window*: they decide where you land, not how
+// far you can travel. The rendered canvas below grows past them as you pan.
+let selStart = null;  // Date — user's selected window (From input)
+let selEnd   = null;  // Date — user's selected window (To input)
+
+let viewStart = null; // Date (start of the rendered canvas)
+let viewEnd   = null; // Date (end of the rendered canvas)
 
 const ganttPanel = document.getElementById('gantt-panel');
 const ganttInner = document.getElementById('gantt-inner');
 
 // ── Date range init ───────────────────────────────────────────
-export function initDateRange() {
+function defaultWindow() {
   const today = startOfDay(new Date());
-  viewStart = addDays(today, -30);
-  viewEnd   = addDays(today, 62);
-  syncDateInputs();
+  return [addDays(today, -30), addDays(today, 62)];
+}
+
+export function initDateRange() {
+  const [start, end] = defaultWindow();
+  applySelection(start, end, false);
 }
 
 export function getViewRange() { return { viewStart, viewEnd }; }
 
-export function setViewRange(start, end) {
-  viewStart = start;
-  viewEnd = end;
+export function setViewRange(start, end) { applySelection(start, end); }
+
+// Snap the canvas back to exactly the selected window and scroll to its start.
+// Every explicit date control routes through here; panning deliberately does not.
+function applySelection(start, end, render = true) {
+  selStart = startOfDay(start);
+  selEnd   = startOfDay(end);
+  viewStart = selStart;
+  viewEnd   = selEnd;
   syncDateInputs();
+  if (render) {
+    renderGantt();
+    ganttPanel.scrollLeft = 0;
+  }
 }
 
 function syncDateInputs() {
-  document.getElementById('view-from').value = fmtISO(viewStart);
-  document.getElementById('view-to').value   = fmtISO(viewEnd);
+  document.getElementById('view-from').value = fmtISO(selStart);
+  document.getElementById('view-to').value   = fmtISO(selEnd);
 }
 
 // ── Main render ───────────────────────────────────────────────
@@ -37,9 +55,14 @@ export function renderGantt() {
   const { projects } = getState();
   const days = getDayRange(viewStart, viewEnd);
   const today = startOfDay(new Date());
+  const bhSet = getBankHolidaySet();
+
+  // Size the canvas to the full timeline so the header spans every day
+  // rather than being clipped at the panel's visible width.
+  ganttInner.style.width = `${days.length * DAY_W}px`;
 
   // Header
-  ganttInner.appendChild(buildHeader(days, today));
+  ganttInner.appendChild(buildHeader(days, today, bhSet));
 
   // Today line (positioned after header is laid out)
   const todayLine = buildTodayLine(today, days);
@@ -54,13 +77,13 @@ export function renderGantt() {
   }
 
   projects.forEach(project => {
-    rowsWrap.appendChild(buildProjectRow(project, days, today));
+    rowsWrap.appendChild(buildProjectRow(project, days, today, bhSet));
     if (!project.collapsed) {
       project.tasks.forEach(task => {
-        rowsWrap.appendChild(buildTaskRow(project, task, days, today));
+        rowsWrap.appendChild(buildTaskRow(project, task, days, today, bhSet));
         if (!task.collapsed) {
           task.subtasks.forEach(sub => {
-            rowsWrap.appendChild(buildSubtaskRow(project, task, sub, days, today));
+            rowsWrap.appendChild(buildSubtaskRow(project, task, sub, days, today, bhSet));
           });
         }
       });
@@ -72,7 +95,7 @@ export function renderGantt() {
 }
 
 // ── Header ────────────────────────────────────────────────────
-function buildHeader(days, today) {
+function buildHeader(days, today, bhSet) {
   const header = document.createElement('div');
   header.className = 'gantt-header';
 
@@ -89,7 +112,10 @@ function buildHeader(days, today) {
     const cell = document.createElement('div');
     cell.className = 'gantt-month-cell';
     cell.style.width = `${count * DAY_W}px`;
-    cell.textContent = days[i].toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+    const label = document.createElement('span');
+    label.className = 'gantt-month-label';
+    label.textContent = days[i].toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+    cell.appendChild(label);
     monthRow.appendChild(cell);
     i += count;
   }
@@ -101,7 +127,7 @@ function buildHeader(days, today) {
     const cell = document.createElement('div');
     cell.className = 'gantt-day-cell';
     const dow = d.getDay();
-    if (dow === 0 || dow === 6) cell.classList.add('weekend');
+    if (dow === 0 || dow === 6 || bhSet.has(fmtISO(d))) cell.classList.add('weekend');
     if (sameDay(d, today)) cell.classList.add('today-col');
     cell.textContent = d.getDate();
     dayRow.appendChild(cell);
@@ -130,34 +156,35 @@ function buildTodayLine(today, days) {
 }
 
 // ── Row builders ──────────────────────────────────────────────
-function buildProjectRow(project, days, today) {
+function buildProjectRow(project, days, today, bhSet) {
   const row = document.createElement('div');
   row.className = 'gantt-row project-row';
-  buildCells(row, days, today);
+  buildCells(row, days, today, bhSet);
+  buildMilestoneMarkers(row, project.milestones || [], days, project.id, project.colour);
   return row;
 }
 
-function buildTaskRow(project, task, days, today) {
+function buildTaskRow(project, task, days, today, bhSet) {
   const row = document.createElement('div');
   row.className = 'gantt-row';
-  buildCells(row, days, today);
+  buildCells(row, days, today, bhSet);
   buildBar(row, task, project.colour, days, (patch) => {
     updateTask(project.id, task.id, patch);
   }, () => openEditTask(project.id, task));
   return row;
 }
 
-function buildSubtaskRow(project, task, sub, days, today) {
+function buildSubtaskRow(project, task, sub, days, today, bhSet) {
   const row = document.createElement('div');
   row.className = 'gantt-row';
-  buildCells(row, days, today);
+  buildCells(row, days, today, bhSet);
   buildBar(row, sub, project.colour, days, (patch) => {
     updateSubtask(project.id, task.id, sub.id, patch);
   }, () => openEditSubtask(project.id, task.id, sub), true);
   return row;
 }
 
-function buildCells(row, days, today) {
+function buildCells(row, days, today, bhSet) {
   const wrap = document.createElement('div');
   wrap.style.display = 'flex';
   wrap.style.height = '100%';
@@ -165,11 +192,53 @@ function buildCells(row, days, today) {
     const cell = document.createElement('div');
     cell.className = 'gantt-cell';
     const dow = d.getDay();
-    if (dow === 0 || dow === 6) cell.classList.add('weekend');
+    if (dow === 0 || dow === 6 || bhSet.has(fmtISO(d))) cell.classList.add('weekend');
     if (sameDay(d, today)) cell.classList.add('today-col');
     wrap.appendChild(cell);
   });
   row.appendChild(wrap);
+}
+
+// ── Milestone markers ─────────────────────────────────────────
+function buildMilestoneMarkers(row, milestones, days, projectId, colour) {
+  if (!milestones.length) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'gantt-milestone-wrap';
+
+  milestones.forEach(milestone => {
+    const mDate = startOfDay(new Date(milestone.date));
+    const idx = days.findIndex(d => sameDay(d, mDate));
+    if (idx < 0) return;
+
+    const diamond = document.createElement('div');
+    diamond.className = 'gantt-milestone';
+    diamond.style.left = `${idx * DAY_W + DAY_W / 2}px`;
+    diamond.style.color = colour;
+
+    diamond.addEventListener('click', e => {
+      e.stopPropagation();
+      openEditMilestone(projectId, milestone);
+    });
+
+    bindMilestoneTooltip(diamond, milestone);
+    wrap.appendChild(diamond);
+  });
+
+  row.appendChild(wrap);
+}
+
+function bindMilestoneTooltip(el, milestone) {
+  el.addEventListener('mouseenter', (e) => {
+    if (tooltip) tooltip.remove();
+    tooltip = document.createElement('div');
+    tooltip.className = 'gantt-tooltip';
+    tooltip.innerHTML = `<strong>${milestone.name}</strong>${milestone.date}`;
+    document.body.appendChild(tooltip);
+    positionTooltip(e);
+  });
+  el.addEventListener('mousemove', positionTooltip);
+  el.addEventListener('mouseleave', () => { tooltip?.remove(); tooltip = null; });
 }
 
 // ── Bar ───────────────────────────────────────────────────────
@@ -313,24 +382,120 @@ export function initNavButtons() {
   document.getElementById('btn-prev').addEventListener('click', () => shiftMonths(-1));
   document.getElementById('btn-next').addEventListener('click', () => shiftMonths(1));
   document.getElementById('btn-today').addEventListener('click', () => {
-    initDateRange();
-    renderGantt();
+    const [start, end] = defaultWindow();
+    applySelection(start, end);
   });
   document.getElementById('view-from').addEventListener('change', e => {
     const d = new Date(e.target.value);
-    if (!isNaN(d)) { viewStart = d; renderGantt(); }
+    if (!isNaN(d)) applySelection(d, selEnd < d ? d : selEnd);
   });
   document.getElementById('view-to').addEventListener('change', e => {
     const d = new Date(e.target.value);
-    if (!isNaN(d)) { viewEnd = d; renderGantt(); }
+    if (!isNaN(d)) applySelection(selStart > d ? d : selStart, d);
   });
 }
 
 function shiftMonths(n) {
-  viewStart = addMonths(viewStart, n);
-  viewEnd   = addMonths(viewEnd, n);
-  syncDateInputs();
-  renderGantt();
+  applySelection(addMonths(selStart, n), addMonths(selEnd, n));
+}
+
+// ── Infinite horizontal panning ───────────────────────────────
+const EDGE_PX  = 240; // extend once the scroll comes this close to an edge
+const MIN_EXTEND = 60; // days added per extension (at least)
+
+// How far panning may grow the canvas beyond the selected window, per side.
+// Every day rendered costs one cell per row, so this bounds the re-render hitch
+// an extension can cause: ~5 years measures ~90ms on a small plan and scales
+// with row count. Budgeting per side rather than capping the total span means a
+// deliberately wide From/To selection is still pannable.
+const MAX_EXTEND_DAYS = 1830;
+
+function daysBetween(a, b) {
+  return Math.round((b - a) / DAY_MS);
+}
+
+// Grows the canvas when `desired` (a scroll offset, which may be out of bounds
+// mid-drag) reaches within EDGE_PX of either end. Returns the number of px the
+// offset was shifted by, so an in-progress drag can compensate and keep the
+// content glued to the cursor.
+//
+// Callers pass the *requested* offset rather than letting the browser clamp it
+// first: a fast drag can ask for a negative scrollLeft, and clamping that to 0
+// before extending would silently swallow the rest of the gesture.
+function maybeExtendRange(desired = ganttPanel.scrollLeft) {
+  const { scrollWidth, clientWidth } = ganttPanel;
+  const pastLeft  = EDGE_PX - desired;
+  const pastRight = (desired + clientWidth + EDGE_PX) - scrollWidth;
+
+  // Always add MIN_EXTEND on top of the overshoot so one extension clears the
+  // trigger zone; otherwise the next event would immediately extend again.
+  if (pastLeft > 0) {
+    const room = MAX_EXTEND_DAYS - daysBetween(viewStart, selStart);
+    if (room <= 0) return 0;
+    const step  = Math.min(room, Math.max(MIN_EXTEND, Math.ceil(pastLeft / DAY_W)));
+    const shift = step * DAY_W;
+    viewStart = addDays(viewStart, -step);
+    renderGantt();
+    ganttPanel.scrollLeft = desired + shift; // re-anchor: content moved right
+    return shift;
+  }
+
+  if (pastRight > 0) {
+    const room = MAX_EXTEND_DAYS - daysBetween(selEnd, viewEnd);
+    if (room <= 0) return 0;
+    const step = Math.min(room, Math.max(MIN_EXTEND, Math.ceil(pastRight / DAY_W)));
+    viewEnd = addDays(viewEnd, step);
+    renderGantt();
+    return 0; // growing rightwards leaves existing content in place
+  }
+
+  return 0;
+}
+
+// ── Canvas pan (drag empty area left/right) ───────────────────
+let panning = false;
+
+export function initCanvasPan() {
+  let startX = 0;
+  let startScrollLeft = 0;
+  let lastScrollLeft = ganttPanel.scrollLeft;
+
+  ganttPanel.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    const target = e.target;
+    if (target.closest('.gantt-bar')) return;
+    panning = true;
+    startX = e.clientX;
+    startScrollLeft = ganttPanel.scrollLeft;
+    ganttPanel.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!panning) return;
+    const delta = e.clientX - startX;
+    // Grow first, so the requested offset is in bounds by the time we apply it.
+    // Re-anchoring the origin keeps the canvas glued to the cursor.
+    startScrollLeft += maybeExtendRange(startScrollLeft - delta);
+    ganttPanel.scrollLeft = startScrollLeft - delta;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!panning) return;
+    panning = false;
+    ganttPanel.style.cursor = '';
+  });
+
+  // Wheel, trackpad and scrollbar. Skipped mid-drag because the pan handler
+  // above calls maybeExtendRange itself in order to compensate the drag origin.
+  ganttPanel.addEventListener('scroll', () => {
+    const movedX = ganttPanel.scrollLeft !== lastScrollLeft;
+    lastScrollLeft = ganttPanel.scrollLeft; // kept fresh even mid-drag
+    if (panning) return;
+    if (!movedX) return; // vertical-only scroll
+    maybeExtendRange();
+    lastScrollLeft = ganttPanel.scrollLeft;
+  });
 }
 
 // ── Sync vertical scroll with sidebar ────────────────────────
@@ -357,11 +522,13 @@ export function syncScroll() {
 // ── Date utilities ────────────────────────────────────────────
 function getDayRange(start, end) {
   const days = [];
-  let cur = startOfDay(new Date(start));
+  const cur  = startOfDay(new Date(start));
   const last = startOfDay(new Date(end));
   while (cur <= last) {
     days.push(new Date(cur));
-    cur = new Date(cur.getTime() + DAY_MS);
+    // Step by calendar day, not by 86400000ms: a fixed-ms step drifts across
+    // DST changes and duplicates or skips a day (e.g. 25 Oct 2026 in the UK).
+    cur.setDate(cur.getDate() + 1);
   }
   return days;
 }
@@ -375,7 +542,9 @@ function sameDay(a, b) {
 }
 
 function addDays(d, n) {
-  return new Date(d.getTime() + n * DAY_MS);
+  const r = startOfDay(d); // calendar-day arithmetic, so DST can't shift the result
+  r.setDate(r.getDate() + n);
+  return r;
 }
 
 function addMonths(d, n) {
